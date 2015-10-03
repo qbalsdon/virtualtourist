@@ -61,9 +61,27 @@
                     <view key="view" contentMode="scaleToFill" id="DlL-Gq-Ocx">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="B8s-Q4-4zY">
+                                <rect key="frame" x="0.0" y="64" width="600" height="95"/>
+                                <animations/>
+                                <connections>
+                                    <outlet property="delegate" destination="qvC-ql-JPF" id="91o-BV-DAf"/>
+                                </connections>
+                            </mapView>
+                        </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="B8s-Q4-4zY" firstAttribute="top" secondItem="3Ie-At-Ou6" secondAttribute="bottom" id="Wd0-ON-T7a"/>
+                            <constraint firstAttribute="trailing" secondItem="B8s-Q4-4zY" secondAttribute="trailing" id="fhc-QY-qIg"/>
+                            <constraint firstItem="c2l-nz-t4e" firstAttribute="top" secondItem="B8s-Q4-4zY" secondAttribute="bottom" constant="441" id="wTb-V5-C3W"/>
+                            <constraint firstItem="B8s-Q4-4zY" firstAttribute="leading" secondItem="DlL-Gq-Ocx" secondAttribute="leading" id="yoI-1A-HcS"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="travelMapView" destination="B8s-Q4-4zY" id="T0C-f8-exZ"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JIA-kP-gWl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -72,9 +90,9 @@
         <!--Navigation Controller-->
         <scene sceneID="enY-pB-NpF">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="DfK-sw-meV" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="DfK-sw-meV" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <nil key="simulatedTopBarMetrics"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="9iM-dn-Yr0">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
