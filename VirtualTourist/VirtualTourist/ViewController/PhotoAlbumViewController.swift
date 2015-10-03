@@ -7,12 +7,15 @@
 //
 
 import UIKit
+import MapKit
 
 class PhotoAlbumViewController: UIViewController {
-
+    
+    var coord: CLLocationCoordinate2D = CLLocationCoordinate2D()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        print("Got location [\(coord.latitude), \(coord.longitude)]")
         // Do any additional setup after loading the view.
     }
 

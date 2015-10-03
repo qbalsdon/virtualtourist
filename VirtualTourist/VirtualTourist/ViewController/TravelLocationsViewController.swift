@@ -13,6 +13,8 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var travelMapView: MKMapView!
     
+    var coord = CLLocationCoordinate2D()
+    
     let SPAN_LAT = "SPAN_LAT"
     let SPAN_LON = "SPAN_LON"
     let LOCATION_LAT = "LOCATION_LAT"
@@ -20,14 +22,13 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         let defs = NSUserDefaults.standardUserDefaults()
         if
             let center_lat = defs.valueForKey(LOCATION_LAT) as? CLLocationDegrees,
             let center_lon = defs.valueForKey(LOCATION_LON) as? CLLocationDegrees,
             let span_lat = defs.valueForKey(SPAN_LAT) as? CLLocationDegrees,
             let span_lon = defs.valueForKey(SPAN_LON) as? CLLocationDegrees {
-                print("I found \(center_lat) - \(center_lon) - \(span_lat) - \(span_lon)")
                 let region = MKCoordinateRegion(center: CLLocationCoordinate2DMake(center_lat, center_lon), span: MKCoordinateSpan(latitudeDelta: span_lat, longitudeDelta: span_lon))
                 travelMapView.setRegion(region, animated: true)
         }
@@ -36,18 +37,56 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     override func viewDidAppear(animated: Bool) {
         
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        print("Location changed")
         let defs = NSUserDefaults.standardUserDefaults()
         defs.setValue(mapView.region.center.latitude, forKey: LOCATION_LAT)
         defs.setValue(mapView.region.center.longitude, forKey: LOCATION_LON)
         defs.setValue(mapView.region.span.latitudeDelta, forKey: SPAN_LAT)
         defs.setValue(mapView.region.span.longitudeDelta, forKey: SPAN_LON)
+    }
+    
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
+        pinAnnotationView.canShowCallout = false
+        pinAnnotationView.animatesDrop = true
+        
+        return pinAnnotationView
+        
+    }
+    
+    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+        coord = (view.annotation?.coordinate)!
+        performSegueWithIdentifier("photoAlbumSegue", sender: self)
+    }
+    
+    @IBAction func mapViewTapped(sender: AnyObject) {
+        if let recognizer = sender as? UIGestureRecognizer {
+            
+            if recognizer.state == UIGestureRecognizerState.Ended{
+                let point = recognizer.locationInView(travelMapView)
+                
+                let coord = travelMapView.convertPoint(point, toCoordinateFromView: travelMapView)
+                
+                let annotation = MKPointAnnotation()
+                annotation.title="New Location"
+                annotation.coordinate = coord
+                
+                travelMapView.addAnnotation(annotation)
+            }
+        }
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "photoAlbumSegue" {
+            if let vc = segue.destinationViewController as? PhotoAlbumViewController {
+                vc.coord = coord
+            }
+        }
     }
 }
