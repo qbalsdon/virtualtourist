@@ -36,6 +36,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="u7e-2c-vIc"/>
+                    <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="travelMapView" destination="OFo-9s-2LA" id="t0S-9R-3xJ"/>
                         <segue destination="qvC-ql-JPF" kind="show" identifier="photoAlbumSegue" id="phe-9O-tiU"/>
@@ -61,9 +62,28 @@
                     <view key="view" contentMode="scaleToFill" id="DlL-Gq-Ocx">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="PqD-Gd-3YO">
+                                <rect key="frame" x="0.0" y="64" width="600" height="95"/>
+                                <animations/>
+                                <connections>
+                                    <outlet property="delegate" destination="qvC-ql-JPF" id="nrO-Et-99h"/>
+                                </connections>
+                            </mapView>
+                        </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="c2l-nz-t4e" firstAttribute="top" secondItem="PqD-Gd-3YO" secondAttribute="bottom" constant="441" id="2qX-rQ-nps"/>
+                            <constraint firstAttribute="trailing" secondItem="PqD-Gd-3YO" secondAttribute="trailing" id="ImC-lJ-XrV"/>
+                            <constraint firstItem="PqD-Gd-3YO" firstAttribute="leading" secondItem="DlL-Gq-Ocx" secondAttribute="leading" id="LJc-OG-k7T"/>
+                            <constraint firstItem="PqD-Gd-3YO" firstAttribute="top" secondItem="3Ie-At-Ou6" secondAttribute="bottom" id="fYK-M2-ecB"/>
+                        </constraints>
                     </view>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <connections>
+                        <outlet property="travelMapView" destination="PqD-Gd-3YO" id="DFg-W1-qda"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JIA-kP-gWl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -72,9 +92,9 @@
         <!--Navigation Controller-->
         <scene sceneID="enY-pB-NpF">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="DfK-sw-meV" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="DfK-sw-meV" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <nil key="simulatedTopBarMetrics"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="9iM-dn-Yr0">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

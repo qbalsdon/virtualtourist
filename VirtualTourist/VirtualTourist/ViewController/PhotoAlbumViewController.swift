@@ -9,14 +9,29 @@
 import UIKit
 import MapKit
 
-class PhotoAlbumViewController: UIViewController {
-    
+class PhotoAlbumViewController: UIViewController, MKMapViewDelegate {
     var coord: CLLocationCoordinate2D = CLLocationCoordinate2D()
+
+    @IBOutlet weak var travelMapView: MKMapView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         print("Got location [\(coord.latitude), \(coord.longitude)]")
         // Do any additional setup after loading the view.
+        
+        let annotation = MKPointAnnotation()
+        annotation.title="New Location"
+        annotation.coordinate = coord
+        travelMapView.addAnnotation(annotation)
+        
+        let viewRegion = MKCoordinateRegionMakeWithDistance(coord, 200, 200)
+        travelMapView.setRegion(viewRegion, animated: true)
+        
+        FlickRSearch.findImagesForLocation(coord, accuracy: 6)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -25,14 +40,12 @@ class PhotoAlbumViewController: UIViewController {
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
+        pinAnnotationView.canShowCallout = false
+        pinAnnotationView.animatesDrop = true
+        
+        return pinAnnotationView
+        
     }
-    */
-
 }

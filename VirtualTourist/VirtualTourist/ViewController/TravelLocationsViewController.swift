@@ -22,7 +22,6 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         let defs = NSUserDefaults.standardUserDefaults()
         if
             let center_lat = defs.valueForKey(LOCATION_LAT) as? CLLocationDegrees,
@@ -35,7 +34,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     }
     
     override func viewDidAppear(animated: Bool) {
-        
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     override func didReceiveMemoryWarning() {

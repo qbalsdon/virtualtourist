@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>FLICKR_PUBLIC_KEY</key>
+	<string>46d450c88177984e83d932b33870cd61</string>
+	<key>FLICKR_SECRET_KEY</key>
+	<string>a57da04ce5acfeb7</string>
+</dict>
+</plist>
