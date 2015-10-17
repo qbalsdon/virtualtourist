@@ -13,7 +13,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var travelMapView: MKMapView!
     
-    var coord = CLLocationCoordinate2D()
+    var currentLocation: VisitedLocation = VisitedLocation()
     
     let SPAN_LAT = "SPAN_LAT"
     let SPAN_LON = "SPAN_LON"
@@ -57,11 +57,10 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         pinAnnotationView.animatesDrop = true
         
         return pinAnnotationView
-        
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        coord = (view.annotation?.coordinate)!
+        currentLocation = view.annotation as! VisitedLocation
         performSegueWithIdentifier("photoAlbumSegue", sender: self)
     }
     
@@ -73,9 +72,8 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
                 
                 let coord = travelMapView.convertPoint(point, toCoordinateFromView: travelMapView)
                 
-                let annotation = MKPointAnnotation()
-                annotation.title="New Location"
-                annotation.coordinate = coord
+                let annotation = VisitedLocation(coord: coord)
+                annotation.getImages()                
                 
                 travelMapView.addAnnotation(annotation)
             }
@@ -85,7 +83,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "photoAlbumSegue" {
             if let vc = segue.destinationViewController as? PhotoAlbumViewController {
-                vc.coord = coord
+                vc.currentLocation = currentLocation
             }
         }
     }

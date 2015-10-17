@@ -12,6 +12,11 @@ class FlickrImage: NSObject {
     var title: String!
     var url: String!
     
+    override init(){
+        title = nil
+        url = nil
+    }
+    
     init(imageTitle: String!, imageUrl: String!){
         title = imageTitle
         url = imageUrl

@@ -69,14 +69,6 @@
                                     <outlet property="delegate" destination="qvC-ql-JPF" id="91o-BV-DAf"/>
                                 </connections>
                             </mapView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cuJ-qT-DEn">
-                                <rect key="frame" x="0.0" y="570" width="600" height="30"/>
-                                <animations/>
-                                <state key="normal" title="New Collection"/>
-                                <connections>
-                                    <action selector="newCollectionButtonPressed:" destination="qvC-ql-JPF" eventType="touchUpInside" id="MbL-mD-4dM"/>
-                                </connections>
-                            </button>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="m8a-yE-r3e">
                                 <rect key="frame" x="0.0" y="159" width="600" height="403"/>
                                 <animations/>
@@ -120,19 +112,27 @@
                                     <outlet property="delegate" destination="qvC-ql-JPF" id="H9m-eM-Dep"/>
                                 </connections>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cuJ-qT-DEn">
+                                <rect key="frame" x="0.0" y="562" width="600" height="30"/>
+                                <animations/>
+                                <state key="normal" title="New Collection"/>
+                                <connections>
+                                    <action selector="newCollectionButtonPressed:" destination="qvC-ql-JPF" eventType="touchUpInside" id="MbL-mD-4dM"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="top" secondItem="m8a-yE-r3e" secondAttribute="bottom" id="1hd-tf-fEG"/>
                             <constraint firstItem="m8a-yE-r3e" firstAttribute="top" secondItem="B8s-Q4-4zY" secondAttribute="bottom" id="D1P-Qg-Z6D"/>
-                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="bottom" secondItem="c2l-nz-t4e" secondAttribute="top" id="J8y-Uy-Uyq"/>
-                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="trailing" secondItem="B8s-Q4-4zY" secondAttribute="trailing" id="QI1-f1-Nda"/>
-                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="top" secondItem="m8a-yE-r3e" secondAttribute="bottom" constant="8" symbolic="YES" id="REq-xs-zXh"/>
+                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="leading" secondItem="m8a-yE-r3e" secondAttribute="leading" id="GZ2-z2-9vV"/>
                             <constraint firstItem="B8s-Q4-4zY" firstAttribute="top" secondItem="3Ie-At-Ou6" secondAttribute="bottom" id="Wd0-ON-T7a"/>
-                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="leading" secondItem="B8s-Q4-4zY" secondAttribute="leading" id="XPr-e8-7Vf"/>
-                            <constraint firstItem="m8a-yE-r3e" firstAttribute="trailing" secondItem="cuJ-qT-DEn" secondAttribute="trailing" id="ZvN-ge-vZj"/>
+                            <constraint firstItem="c2l-nz-t4e" firstAttribute="top" secondItem="cuJ-qT-DEn" secondAttribute="bottom" constant="8" symbolic="YES" id="YoJ-tx-PLK"/>
                             <constraint firstAttribute="trailing" secondItem="B8s-Q4-4zY" secondAttribute="trailing" id="fhc-QY-qIg"/>
-                            <constraint firstItem="m8a-yE-r3e" firstAttribute="leading" secondItem="cuJ-qT-DEn" secondAttribute="leading" id="nKd-GV-PX8"/>
+                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="trailing" secondItem="m8a-yE-r3e" secondAttribute="trailing" id="k6u-i3-1nZ"/>
+                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="leading" secondItem="B8s-Q4-4zY" secondAttribute="leading" id="m20-nw-Ekp"/>
+                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="trailing" secondItem="B8s-Q4-4zY" secondAttribute="trailing" id="srv-rp-lhg"/>
                             <constraint firstItem="c2l-nz-t4e" firstAttribute="top" secondItem="B8s-Q4-4zY" secondAttribute="bottom" constant="441" id="wTb-V5-C3W"/>
                             <constraint firstItem="B8s-Q4-4zY" firstAttribute="leading" secondItem="DlL-Gq-Ocx" secondAttribute="leading" id="yoI-1A-HcS"/>
                         </constraints>

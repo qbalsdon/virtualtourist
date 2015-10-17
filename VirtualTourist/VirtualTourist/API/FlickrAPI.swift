@@ -50,14 +50,18 @@ class FlickrAPI: NSObject {
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
             if let error = downloadError {
                 print("Could not complete the request \(error)")
-                onError("Unable to connect to Flickr API")
+                dispatch_async(dispatch_get_main_queue(), {
+                    onError("Unable to connect to Flickr API")
+                })
             } else {
                 var parsedResult: AnyObject!
                 do {
                     parsedResult = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)
                 } catch {
                     print("Error parsing response")
-                    onError("Unknown response from the Flickr API")
+                    dispatch_async(dispatch_get_main_queue(), {
+                        onError("Unknown response from the Flickr API")
+                    })
                     return;
                 }
                 //print("Received the following: \(parsedResult)")
@@ -66,7 +70,9 @@ class FlickrAPI: NSObject {
                     if let photoCount = photosDictionary["total"] as? String{
                         let count = (photoCount as NSString).integerValue
                         if (count <= 0){
-                            onSuccess([FlickrImage]())
+                            dispatch_async(dispatch_get_main_queue(), {
+                                onSuccess([FlickrImage]())
+                            })
                             return
                         }
                     }
@@ -79,15 +85,20 @@ class FlickrAPI: NSObject {
                             
                             imageArray.append(FlickrImage(imageTitle: photoTitle, imageUrl: imageUrlString))
                         }
-                        
-                        onSuccess(imageArray)
+                        dispatch_async(dispatch_get_main_queue(), {
+                            onSuccess(imageArray)
+                        })
                     } else {
                         print("Cant find key 'photo' in \(photosDictionary)")
-                        onError("Flickr API response error: photo not found")
+                        dispatch_async(dispatch_get_main_queue(), {
+                            onError("Flickr API response error: photo not found")
+                        })
                     }
                 } else {
                     print("Cant find key 'photos' in \(parsedResult)")
-                    onError("Flickr API response error: photo list not found")
+                    dispatch_async(dispatch_get_main_queue(), {
+                        onError("Flickr API response error: photo list not found")
+                    })
                 }
             }
         }
@@ -109,15 +120,13 @@ class FlickrAPI: NSObject {
         return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
     }
     
-    class func downloadImageForCellAsync(imageURL: String!, cellToUpdate: FlickrImageCollectionViewCell){
+    class func downloadImageForCellAsync(imageURL: String!, onComplete:(NSData?) -> ()){
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithURL(NSURL(string: imageURL)!) { (data, response, error) -> Void in
             if error == nil {
-                let image = UIImage(data: data!)
-                dispatch_async(dispatch_get_main_queue(), {
-                    cellToUpdate.image.image = image
-                })
+                onComplete(data)
             } else {
+                onComplete(nil)
                 print("Cannot download image")
             }
         }

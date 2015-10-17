@@ -11,9 +11,7 @@ import MapKit
 
 class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
-    var coord: CLLocationCoordinate2D = CLLocationCoordinate2D()
-    var imageDataSource: [FlickrImage] = []
-    var currentPage = 1
+    var currentLocation: VisitedLocation = VisitedLocation()
     
     @IBOutlet weak var travelMapView: MKMapView!
     @IBOutlet weak var newCollectionButton: UIButton!
@@ -24,13 +22,11 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
         
         let annotation = MKPointAnnotation()
         annotation.title="New Location"
-        annotation.coordinate = coord
+        annotation.coordinate = currentLocation.coordinate
         travelMapView.addAnnotation(annotation)
         
-        let viewRegion = MKCoordinateRegionMakeWithDistance(coord, 200, 200)
-        travelMapView.setRegion(viewRegion, animated: true)
-        newCollectionButton.enabled = false
-        FlickrAPI.findImagesForLocation(coord, radius: 20, page:currentPage, onSuccess: onFlickrImagesReceived, onError: onFlickrError)
+        let viewRegion = MKCoordinateRegionMakeWithDistance(currentLocation.coordinate, 200, 200)
+        travelMapView.setRegion(viewRegion, animated: true)        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -52,7 +48,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
     }
 
     func onFlickrImagesReceived(images: [FlickrImage]){
-        imageDataSource = images
+        currentLocation.images = images
         collectionView.reloadData()
         newCollectionButton.enabled = true
     }
@@ -63,20 +59,32 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
     
     @IBAction func newCollectionButtonPressed(sender: AnyObject) {
         newCollectionButton.enabled = false
-        currentPage = currentPage + 1
-        FlickrAPI.findImagesForLocation(coord, radius: 20, page:currentPage, onSuccess: onFlickrImagesReceived, onError: onFlickrError)
+        currentLocation.page = currentLocation.page+1
+        FlickrAPI.findImagesForLocation(currentLocation.coordinate, radius: 20, page:currentLocation.page, onSuccess: onFlickrImagesReceived, onError: onFlickrError)
     }
     
     //MARK: UICollectionView
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cellId", forIndexPath: indexPath) as! FlickrImageCollectionViewCell
-        let image = imageDataSource[indexPath.row]
+        let image = currentLocation.images[indexPath.row]
         
         cell.image.image = UIImage(named: "Download")
         
-        FlickrAPI.downloadImageForCellAsync(image.url, cellToUpdate: cell)
+        FlickrAPI.downloadImageForCellAsync(image.url) { (data) -> () in
+            dispatch_async(dispatch_get_main_queue(), {
+                if data != nil {
+                    let image = UIImage(data: data!)
+                    cell.image.image = image
+                }
+            })
+        }
         
         return cell
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        currentLocation.images.removeAtIndex(indexPath.row)
+        collectionView.deleteItemsAtIndexPaths([indexPath])
     }
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
@@ -84,7 +92,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imageDataSource.count
+        return currentLocation.images.count
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
