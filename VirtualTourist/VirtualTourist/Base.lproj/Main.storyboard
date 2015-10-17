@@ -69,17 +69,77 @@
                                     <outlet property="delegate" destination="qvC-ql-JPF" id="91o-BV-DAf"/>
                                 </connections>
                             </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cuJ-qT-DEn">
+                                <rect key="frame" x="0.0" y="570" width="600" height="30"/>
+                                <animations/>
+                                <state key="normal" title="New Collection"/>
+                                <connections>
+                                    <action selector="newCollectionButtonPressed:" destination="qvC-ql-JPF" eventType="touchUpInside" id="MbL-mD-4dM"/>
+                                </connections>
+                            </button>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="m8a-yE-r3e">
+                                <rect key="frame" x="0.0" y="159" width="600" height="403"/>
+                                <animations/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="v3O-kT-Sqx">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cellId" id="6U2-68-Ye9" customClass="FlickrImageCollectionViewCell" customModule="VirtualTourist" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yql-a1-ooo">
+                                                    <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
+                                                    <animations/>
+                                                </imageView>
+                                            </subviews>
+                                            <animations/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <animations/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="Yql-a1-ooo" secondAttribute="bottom" id="Nro-t5-p6F"/>
+                                            <constraint firstAttribute="trailing" secondItem="Yql-a1-ooo" secondAttribute="trailing" id="chX-T0-pDA"/>
+                                            <constraint firstItem="Yql-a1-ooo" firstAttribute="top" secondItem="6U2-68-Ye9" secondAttribute="top" id="dK0-wA-XSl"/>
+                                            <constraint firstItem="Yql-a1-ooo" firstAttribute="leading" secondItem="6U2-68-Ye9" secondAttribute="leading" id="tJA-Qv-Dls"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="image" destination="Yql-a1-ooo" id="q4L-cS-haT"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="qvC-ql-JPF" id="31n-Pe-d0N"/>
+                                    <outlet property="delegate" destination="qvC-ql-JPF" id="H9m-eM-Dep"/>
+                                </connections>
+                            </collectionView>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="m8a-yE-r3e" firstAttribute="top" secondItem="B8s-Q4-4zY" secondAttribute="bottom" id="D1P-Qg-Z6D"/>
+                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="bottom" secondItem="c2l-nz-t4e" secondAttribute="top" id="J8y-Uy-Uyq"/>
+                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="trailing" secondItem="B8s-Q4-4zY" secondAttribute="trailing" id="QI1-f1-Nda"/>
+                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="top" secondItem="m8a-yE-r3e" secondAttribute="bottom" constant="8" symbolic="YES" id="REq-xs-zXh"/>
                             <constraint firstItem="B8s-Q4-4zY" firstAttribute="top" secondItem="3Ie-At-Ou6" secondAttribute="bottom" id="Wd0-ON-T7a"/>
+                            <constraint firstItem="cuJ-qT-DEn" firstAttribute="leading" secondItem="B8s-Q4-4zY" secondAttribute="leading" id="XPr-e8-7Vf"/>
+                            <constraint firstItem="m8a-yE-r3e" firstAttribute="trailing" secondItem="cuJ-qT-DEn" secondAttribute="trailing" id="ZvN-ge-vZj"/>
                             <constraint firstAttribute="trailing" secondItem="B8s-Q4-4zY" secondAttribute="trailing" id="fhc-QY-qIg"/>
+                            <constraint firstItem="m8a-yE-r3e" firstAttribute="leading" secondItem="cuJ-qT-DEn" secondAttribute="leading" id="nKd-GV-PX8"/>
                             <constraint firstItem="c2l-nz-t4e" firstAttribute="top" secondItem="B8s-Q4-4zY" secondAttribute="bottom" constant="441" id="wTb-V5-C3W"/>
                             <constraint firstItem="B8s-Q4-4zY" firstAttribute="leading" secondItem="DlL-Gq-Ocx" secondAttribute="leading" id="yoI-1A-HcS"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="collectionView" destination="m8a-yE-r3e" id="xR0-Hu-nBE"/>
+                        <outlet property="newCollectionButton" destination="cuJ-qT-DEn" id="S5L-sB-ELd"/>
                         <outlet property="travelMapView" destination="B8s-Q4-4zY" id="T0C-f8-exZ"/>
                     </connections>
                 </viewController>

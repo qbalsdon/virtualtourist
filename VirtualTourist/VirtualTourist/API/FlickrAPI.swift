@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 
 class FlickrAPI: NSObject {
-    class func findImagesForLocation(location: CLLocationCoordinate2D, radius: Int){
+    class func findImagesForLocation(location: CLLocationCoordinate2D, radius: Int, page: Int, onSuccess:([FlickrImage]) -> (), onError:(String!)->()){
         
         let BASE_URL = "https://api.flickr.com/services/rest/"
         let METHOD_NAME = "flickr.photos.search"
@@ -37,8 +37,9 @@ class FlickrAPI: NSObject {
             "radius": radius,
             "extras": EXTRAS,
             "format": DATA_FORMAT,
-            "per_page": "500",
-            "nojsoncallback": NO_JSON_CALLBACK
+            "per_page": "12",
+            "nojsoncallback": NO_JSON_CALLBACK,
+            "page" : page
         ]
         
         let session = NSURLSession.sharedSession()
@@ -49,47 +50,44 @@ class FlickrAPI: NSObject {
         let task = session.dataTaskWithRequest(request) {data, response, downloadError in
             if let error = downloadError {
                 print("Could not complete the request \(error)")
+                onError("Unable to connect to Flickr API")
             } else {
                 var parsedResult: AnyObject!
                 do {
                     parsedResult = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)
                 } catch {
                     print("Error parsing response")
+                    onError("Unknown response from the Flickr API")
                     return;
                 }
-                print("Received the following: \(parsedResult)")
+                //print("Received the following: \(parsedResult)")
                 if let photosDictionary = parsedResult.valueForKey("photos") as? NSDictionary {
                     
                     if let photoCount = photosDictionary["total"] as? String{
                         let count = (photoCount as NSString).integerValue
                         if (count <= 0){
-                            print("No photos found")
+                            onSuccess([FlickrImage]())
                             return
                         }
                     }
                     
                     if let photoArray = photosDictionary.valueForKey("photo") as? [[String: AnyObject]] {
-                        
+                        var imageArray = [FlickrImage]()
                         for photo in photoArray {
                             let photoTitle = photo["title"] as? String
                             let imageUrlString = photo["url_m"] as? String
                             
-                            print("Found Image: Title: [\(photoTitle)] ImageURLString: [\(imageUrlString)]")
-                            //let imageURL = NSURL(string: imageUrlString!)
+                            imageArray.append(FlickrImage(imageTitle: photoTitle, imageUrl: imageUrlString))
                         }
                         
-                        /*if let imageData = NSData(contentsOfURL: imageURL!) {
-                        dispatch_async(dispatch_get_main_queue(), {
-                        //self.imageToEdit.image = UIImage(data: imageData)
-                        })
-                        } else {
-                        print("Image does not exist at \(imageURL)")
-                        }*/
+                        onSuccess(imageArray)
                     } else {
                         print("Cant find key 'photo' in \(photosDictionary)")
+                        onError("Flickr API response error: photo not found")
                     }
                 } else {
                     print("Cant find key 'photos' in \(parsedResult)")
+                    onError("Flickr API response error: photo list not found")
                 }
             }
         }
@@ -109,5 +107,20 @@ class FlickrAPI: NSObject {
             
         }
         return (!urlVars.isEmpty ? "?" : "") + urlVars.joinWithSeparator("&")
+    }
+    
+    class func downloadImageForCellAsync(imageURL: String!, cellToUpdate: FlickrImageCollectionViewCell){
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithURL(NSURL(string: imageURL)!) { (data, response, error) -> Void in
+            if error == nil {
+                let image = UIImage(data: data!)
+                dispatch_async(dispatch_get_main_queue(), {
+                    cellToUpdate.image.image = image
+                })
+            } else {
+                print("Cannot download image")
+            }
+        }
+        task.resume()
     }
 }
