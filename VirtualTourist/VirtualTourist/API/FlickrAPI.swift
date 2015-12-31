@@ -10,6 +10,24 @@ import UIKit
 import MapKit
 
 class FlickrAPI: NSObject {
+    
+    // MARK: - Shared Instance
+    
+    class func sharedInstance() -> FlickrAPI {
+        
+        struct Singleton {
+            static var sharedInstance = FlickrAPI()
+        }
+        
+        return Singleton.sharedInstance
+    }
+    
+    // MARK: - Shared Image Cache
+    
+    struct Caches {
+        static let imageCache = ImageCache()
+    }
+    
     class func findImagesForLocation(location: CLLocationCoordinate2D, radius: Int, page: Int, onSuccess:([FlickrImage]) -> (), onError:(String!)->()){
         
         let BASE_URL = "https://api.flickr.com/services/rest/"

@@ -8,12 +8,15 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var travelMapView: MKMapView!
     
+    
     var currentLocation: VisitedLocation = VisitedLocation()
+    var pins = [Pin]()
     
     let SPAN_LAT = "SPAN_LAT"
     let SPAN_LON = "SPAN_LON"
@@ -31,6 +34,70 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
             let span_lon = defs.valueForKey(SPAN_LON) as? CLLocationDegrees {
                 let region = MKCoordinateRegion(center: CLLocationCoordinate2DMake(center_lat, center_lon), span: MKCoordinateSpan(latitudeDelta: span_lat, longitudeDelta: span_lon))
                 travelMapView.setRegion(region, animated: true)
+        }
+        
+        runTestForData()
+    }
+    
+    func fetchAllPins() -> [Pin] {
+        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        
+        do {
+            return try CoreDataStackManager.sharedInstance().managedObjectContext.executeFetchRequest(fetchRequest) as! [Pin]
+        } catch  let error as NSError {
+            print("Error in fetchAllPins(): \(error)")
+            return [Pin]()
+        }
+    }
+    
+    func addPin(latitude: Double, longitude: Double) {
+        let dictionary: [String : AnyObject] = [
+            Pin.Keys.Latitude : latitude,
+            Pin.Keys.Longitude : longitude
+        ]
+        
+        // Now we create a new Person, using the shared Context
+        let pinToBeAdded = Pin(dictionary: dictionary, context: CoreDataStackManager.sharedInstance().managedObjectContext)
+        
+        let imageDict: [String : AnyObject] = [
+            PinImage.Keys.ImageURL: "Test 1"
+        ]
+        
+        let imageDict2: [String : AnyObject] = [
+            PinImage.Keys.ImageURL: "Test 2"
+        ]
+        
+        let imageDict3: [String : AnyObject] = [
+            PinImage.Keys.ImageURL: "Test 3"
+        ]
+        
+        let image1 = PinImage(dictionary: imageDict, context: CoreDataStackManager.sharedInstance().managedObjectContext)
+        
+        let image2 = PinImage(dictionary: imageDict2, context: CoreDataStackManager.sharedInstance().managedObjectContext)
+        
+        let image3 = PinImage(dictionary: imageDict3, context: CoreDataStackManager.sharedInstance().managedObjectContext)
+        
+        image1.pin = pinToBeAdded
+        image2.pin = pinToBeAdded
+        image3.pin = pinToBeAdded
+        
+        pins.append(pinToBeAdded)
+        
+    }
+    
+    func runTestForData() {
+        
+        addPin(1.2, longitude: 5.3)
+        
+        CoreDataStackManager.sharedInstance().saveContext()
+        
+        print("There are \(fetchAllPins().count) items in the db")
+        
+        for pin in fetchAllPins() {
+            print("The pin has \(pin.images.count) images")
+            for pI in pin.images {
+                print("    Image URL: \(pI.imageURL)")
+            }
         }
     }
     
