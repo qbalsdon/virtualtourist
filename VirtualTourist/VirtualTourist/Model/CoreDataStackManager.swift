@@ -2,7 +2,7 @@
 //  CoreDataStackManager.swift
 //  VirtualTourist
 //
-//  Created by Quintin Balsdon on 2015/12/30.
+//  Modified by Quintin Balsdon on 2015/12/30.
 //  Copyright © 2015 Quintin Balsdon. All rights reserved.
 //
 

@@ -58,57 +58,6 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    /*func addPin(latitude: Double, longitude: Double) {
-        let dictionary: [String : AnyObject] = [
-            Pin.Keys.Latitude : latitude,
-            Pin.Keys.Longitude : longitude
-        ]
-        
-        // Now we create a new Person, using the shared Context
-        let pinToBeAdded = Pin(dictionary: dictionary, context: CoreDataStackManager.sharedInstance().managedObjectContext)
-        
-        let imageDict: [String : AnyObject] = [
-            Photo.Keys.ImageURL: "Test 1"
-        ]
-        
-        let imageDict2: [String : AnyObject] = [
-            Photo.Keys.ImageURL: "Test 2"
-        ]
-        
-        let imageDict3: [String : AnyObject] = [
-            Photo.Keys.ImageURL: "Test 3"
-        ]
-        
-        let image1 = Photo(dictionary: imageDict, context: CoreDataStackManager.sharedInstance().managedObjectContext)
-        
-        let image2 = Photo(dictionary: imageDict2, context: CoreDataStackManager.sharedInstance().managedObjectContext)
-        
-        let image3 = Photo(dictionary: imageDict3, context: CoreDataStackManager.sharedInstance().managedObjectContext)
-        
-        image1.pin = pinToBeAdded
-        image2.pin = pinToBeAdded
-        image3.pin = pinToBeAdded
-        
-        pins.append(pinToBeAdded)
-        
-    }
-    
-    func runTestForData() {
-        
-        addPin(1.2, longitude: 5.3)
-        
-        CoreDataStackManager.sharedInstance().saveContext()
-        
-        print("There are \(fetchAllPins().count) items in the db")
-        
-        for pin in fetchAllPins() {
-            print("The pin has \(pin.images.count) images")
-            for pI in pin.images {
-                print("    Image URL: \(pI.imageURL)")
-            }
-        }
-    }*/
-    
     override func viewDidAppear(animated: Bool) {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
@@ -163,7 +112,6 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
                     Pin.Keys.Longitude : coord.longitude
                 ]
                 
-                // Now we create a new Person, using the shared Context
                 let pinToBeAdded = Pin(dictionary: dictionary, context: CoreDataStackManager.sharedInstance().managedObjectContext)
                 CoreDataStackManager.sharedInstance().saveContext()
                 addPinToMap(pinToBeAdded)
