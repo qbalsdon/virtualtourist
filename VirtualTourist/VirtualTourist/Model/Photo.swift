@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class PinImage: NSManagedObject {
+class Photo: NSManagedObject {
     struct Keys {
         static let ImageURL = "imageURL"
     }
@@ -24,7 +24,7 @@ class PinImage: NSManagedObject {
     init(dictionary: [String : AnyObject], context: NSManagedObjectContext) {
         
         // Core Data
-        let entity =  NSEntityDescription.entityForName("PinImage", inManagedObjectContext: context)!
+        let entity =  NSEntityDescription.entityForName("Photo", inManagedObjectContext: context)!
         super.init(entity: entity, insertIntoManagedObjectContext: context)
         
         // Dictionary

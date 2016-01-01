@@ -17,6 +17,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     var currentLocation: VisitedLocation = VisitedLocation()
     var pins = [Pin]()
+    var currentPin : Pin? = nil
     
     let SPAN_LAT = "SPAN_LAT"
     let SPAN_LON = "SPAN_LON"
@@ -36,7 +37,16 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
                 travelMapView.setRegion(region, animated: true)
         }
         
-        runTestForData()
+        
+        //runTestForData()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        travelMapView.removeAnnotations(travelMapView.annotations)
+        let allPins = fetchAllPins()
+        for pin in allPins {
+            addPinToMap(pin)
+        }
     }
     
     func fetchAllPins() -> [Pin] {
@@ -50,7 +60,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    func addPin(latitude: Double, longitude: Double) {
+    /*func addPin(latitude: Double, longitude: Double) {
         let dictionary: [String : AnyObject] = [
             Pin.Keys.Latitude : latitude,
             Pin.Keys.Longitude : longitude
@@ -60,22 +70,22 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         let pinToBeAdded = Pin(dictionary: dictionary, context: CoreDataStackManager.sharedInstance().managedObjectContext)
         
         let imageDict: [String : AnyObject] = [
-            PinImage.Keys.ImageURL: "Test 1"
+            Photo.Keys.ImageURL: "Test 1"
         ]
         
         let imageDict2: [String : AnyObject] = [
-            PinImage.Keys.ImageURL: "Test 2"
+            Photo.Keys.ImageURL: "Test 2"
         ]
         
         let imageDict3: [String : AnyObject] = [
-            PinImage.Keys.ImageURL: "Test 3"
+            Photo.Keys.ImageURL: "Test 3"
         ]
         
-        let image1 = PinImage(dictionary: imageDict, context: CoreDataStackManager.sharedInstance().managedObjectContext)
+        let image1 = Photo(dictionary: imageDict, context: CoreDataStackManager.sharedInstance().managedObjectContext)
         
-        let image2 = PinImage(dictionary: imageDict2, context: CoreDataStackManager.sharedInstance().managedObjectContext)
+        let image2 = Photo(dictionary: imageDict2, context: CoreDataStackManager.sharedInstance().managedObjectContext)
         
-        let image3 = PinImage(dictionary: imageDict3, context: CoreDataStackManager.sharedInstance().managedObjectContext)
+        let image3 = Photo(dictionary: imageDict3, context: CoreDataStackManager.sharedInstance().managedObjectContext)
         
         image1.pin = pinToBeAdded
         image2.pin = pinToBeAdded
@@ -99,7 +109,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
                 print("    Image URL: \(pI.imageURL)")
             }
         }
-    }
+    }*/
     
     override func viewDidAppear(animated: Bool) {
         navigationController?.setNavigationBarHidden(true, animated: true)
@@ -127,8 +137,19 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        currentLocation = view.annotation as! VisitedLocation
+        let location = view.annotation as! PinAnnotation
+        
+        currentPin = location.pin
+        
         performSegueWithIdentifier("photoAlbumSegue", sender: self)
+    }
+    
+    func addPinToMap(pin: Pin) {
+        
+        let annotation = PinAnnotation()
+        annotation.coordinate = CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude)
+        annotation.pin = pin
+        travelMapView.addAnnotation(annotation)
     }
     
     @IBAction func mapViewTapped(sender: AnyObject) {
@@ -139,10 +160,15 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
                 
                 let coord = travelMapView.convertPoint(point, toCoordinateFromView: travelMapView)
                 
-                let annotation = VisitedLocation(coord: coord)
-                annotation.getImages()                
+                let dictionary: [String : AnyObject] = [
+                    Pin.Keys.Latitude : coord.latitude,
+                    Pin.Keys.Longitude : coord.longitude
+                ]
                 
-                travelMapView.addAnnotation(annotation)
+                // Now we create a new Person, using the shared Context
+                let pinToBeAdded = Pin(dictionary: dictionary, context: CoreDataStackManager.sharedInstance().managedObjectContext)
+                CoreDataStackManager.sharedInstance().saveContext()
+                addPinToMap(pinToBeAdded)
             }
         }
     }
@@ -150,7 +176,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "photoAlbumSegue" {
             if let vc = segue.destinationViewController as? PhotoAlbumViewController {
-                vc.currentLocation = currentLocation
+                vc.currentPin = currentPin
             }
         }
     }
