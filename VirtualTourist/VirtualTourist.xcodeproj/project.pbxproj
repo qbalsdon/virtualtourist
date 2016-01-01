@@ -24,7 +24,6 @@
 		5695166C1BB6C3C6000651A7 /* TravelLocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5695166B1BB6C3C6000651A7 /* TravelLocationsViewController.swift */; };
 		5695166E1BBAB1FA000651A7 /* PhotoAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5695166D1BBAB1FA000651A7 /* PhotoAlbumViewController.swift */; };
 		569516701BBAB6BE000651A7 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5695166F1BBAB6BE000651A7 /* MapKit.framework */; };
-		56B359D81BD2684900F987D7 /* VisitedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B359D71BD2684900F987D7 /* VisitedLocation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,7 +46,6 @@
 		5695166B1BB6C3C6000651A7 /* TravelLocationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TravelLocationsViewController.swift; path = ViewController/TravelLocationsViewController.swift; sourceTree = "<group>"; };
 		5695166D1BBAB1FA000651A7 /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhotoAlbumViewController.swift; path = ViewController/PhotoAlbumViewController.swift; sourceTree = "<group>"; };
 		5695166F1BBAB6BE000651A7 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		56B359D71BD2684900F987D7 /* VisitedLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VisitedLocation.swift; path = Model/VisitedLocation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,7 +64,6 @@
 			isa = PBXGroup;
 			children = (
 				562D07651BD23DCF0076BA57 /* FlickrImage.swift */,
-				56B359D71BD2684900F987D7 /* VisitedLocation.swift */,
 				5654EB971C34114400D24022 /* Pin.swift */,
 				5654EB991C34117200D24022 /* Photo.swift */,
 				5654EB9B1C34125A00D24022 /* CoreDataStackManager.swift */,
@@ -217,7 +214,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				569516561BB6C333000651A7 /* AppDelegate.swift in Sources */,
-				56B359D81BD2684900F987D7 /* VisitedLocation.swift in Sources */,
 				5654EB9C1C34125A00D24022 /* CoreDataStackManager.swift in Sources */,
 				5695165E1BB6C333000651A7 /* VirtualTourist.xcdatamodeld in Sources */,
 				5654EB981C34114400D24022 /* Pin.swift in Sources */,

@@ -12,7 +12,8 @@ import MapKit
 class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
     var currentPin : Pin? = nil
-    
+    var imagesToDownload = 0;
+    var pageCounter = 0
     @IBOutlet weak var travelMapView: MKMapView!
     @IBOutlet weak var newCollectionButton: UIButton!
     @IBOutlet weak var collectionView: UICollectionView!
@@ -34,6 +35,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
         if currentPin?.images.count == 0 {
             newCollectionButton.enabled = false
             FlickrAPI.findImagesForLocation(CLLocationCoordinate2D(latitude: (currentPin?.latitude)!, longitude: (currentPin?.longitude)!), radius: 20, page: 0, onSuccess: onFlickrImagesReceived, onError: onFlickrError)
+            pageCounter++
         }
     }
     
@@ -52,7 +54,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
     }
 
     func onFlickrImagesReceived(images: [FlickrImage]){
-        newCollectionButton.enabled = true
+        imagesToDownload = images.count
         for image in images {
             let imageDict: [String : AnyObject] = [
                 Photo.Keys.ImageURL: image.url
@@ -71,8 +73,13 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
     
     @IBAction func newCollectionButtonPressed(sender: AnyObject) {
         newCollectionButton.enabled = false
-        /*currentLocation.page = currentLocation.page+1
-        FlickrAPI.findImagesForLocation(currentLocation.coordinate, radius: 20, page:currentLocation.page, onSuccess: onFlickrImagesReceived, onError: onFlickrError)*/
+        for img in (currentPin?.images)! {
+            FlickrAPI.Caches.imageCache.removeImage(withPath: img.filePath)
+            img.pin = nil
+        }
+        CoreDataStackManager.sharedInstance().saveContext()
+        pageCounter++
+        FlickrAPI.findImagesForLocation(CLLocationCoordinate2D(latitude: (currentPin?.latitude)!, longitude: (currentPin?.longitude)!), radius: 20, page:pageCounter, onSuccess: onFlickrImagesReceived, onError: onFlickrError)
     }
     
     //MARK: UICollectionView
@@ -82,9 +89,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
         
         if let image = FlickrAPI.Caches.imageCache.imageWithIdentifier((photo?.imageURL)!) {
             cell.image.image = image
-            print("Loaded from memory")
+            imagesToDownload--
         } else {
-            print("Downloading! \(photo?.imageURL)")
             cell.image.image = UIImage(named: "Download")
             
             FlickrAPI.downloadImageForCellAsync(photo?.imageURL) { (data) -> () in
@@ -93,11 +99,16 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
                         let image = UIImage(data: data!)
                         cell.image.image = image
                         
-                        FlickrAPI.Caches.imageCache.storeImage(image!, withIdentifier: (photo?.imageURL)!)
-                        print("    Saved!")
+                        photo!.filePath = FlickrAPI.Caches.imageCache.storeImage(image!, withIdentifier: (photo?.imageURL)!)
+                        CoreDataStackManager.sharedInstance().saveContext()
                     }
                 })
             }
+            imagesToDownload--
+        }
+        
+        if imagesToDownload == 0 {
+            newCollectionButton.enabled = true
         }
         
         return cell
@@ -105,7 +116,14 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         //currentLocation.images.removeAtIndex(indexPath.row)
-        collectionView.deleteItemsAtIndexPaths([indexPath])
+        let img = currentPin?.images[indexPath.row]
+        
+        FlickrAPI.Caches.imageCache.removeImage(withPath: (img?.filePath)!)
+        
+        img!.pin = nil
+        
+        CoreDataStackManager.sharedInstance().saveContext()
+        collectionView.reloadData()
     }
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {

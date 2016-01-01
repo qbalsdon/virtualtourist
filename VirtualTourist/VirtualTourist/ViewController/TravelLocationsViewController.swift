@@ -14,8 +14,6 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var travelMapView: MKMapView!
     
-    
-    var currentLocation: VisitedLocation = VisitedLocation()
     var pins = [Pin]()
     var currentPin : Pin? = nil
     

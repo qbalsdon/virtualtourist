@@ -10,31 +10,6 @@ import UIKit
 
 class ImageCache {
     
-    /*func documentsDirectory() -> String {
-        return NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0]
-    }
-    
-    func getFileRef(path: String) -> String {
-        return path//(NSURL(string: path)?.lastPathComponent)!
-    }
-    
-    func saveImage(image: UIImage, path: String) -> Bool {
-        let jpegImageData = UIImageJPEGRepresentation(image, 100.0)
-        
-        print("Saving \(documentsDirectory())\\\(getFileRef(path))")
-        let result = jpegImageData!.writeToFile("\(documentsDirectory())/\(getFileRef(path))", atomically: true)
-        return result
-    }
-    
-    func loadImageFromPath(path: String) -> UIImage? {
-        let data = NSData(contentsOfFile: "\(documentsDirectory())/\(getFileRef(path))")
-        if data == nil {
-            return nil
-        }
-        let image = UIImage(data: data!)
-        return image
-    }*/
-    
     // MARK: - Retreiving images
     
     func imageWithIdentifier(identifier: String?) -> UIImage? {
@@ -44,8 +19,6 @@ class ImageCache {
         }
         
         let path = pathForIdentifier(identifier!)
-        
-        print("Attempting to load from \(path)")
         
         if let data = NSData(contentsOfFile: path) {
             return UIImage(data: data)
@@ -70,16 +43,37 @@ class ImageCache {
         let data = UIImagePNGRepresentation(image!)!
         data.writeToFile(path, atomically: true)
         
-        print("Saving to \(path)")
-        
         return path
     }
+
+    func removeImage(withIdentifier identifier: String) -> Bool {
+        let path = pathForIdentifier(identifier)
+        
+        do {
+                try NSFileManager.defaultManager().removeItemAtPath(path)
+        } catch _ {
+            return false
+        }
+        
+        return true
+    }
+    
+    func removeImage(withPath path: String) -> Bool {
+        do {
+            try NSFileManager.defaultManager().removeItemAtPath(path)
+        } catch _ {
+            return false
+        }
+        
+        return true
+    }
+
     
     // MARK: - Helper
     
     func pathForIdentifier(identifier: String) -> String {
-        let removed = identifier.stringByReplacingOccurrencesOfString("https://", withString: "")
-        
+        let removedScheme = identifier.stringByReplacingOccurrencesOfString("https://", withString: "")
+        let id = removedScheme.stringByReplacingOccurrencesOfString("/", withString: "_")
         let documentsDirectoryURL: NSURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
         let fullURL = documentsDirectoryURL.URLByAppendingPathComponent(id)
         
