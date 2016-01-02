@@ -51,7 +51,7 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
         let fetchRequest = NSFetchRequest(entityName: "Pin")
         
         do {
-            return try CoreDataStackManager.sharedInstance().managedObjectContext.executeFetchRequest(fetchRequest) as! [Pin]
+            return try CoreDataStackManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest) as! [Pin]
         } catch  let error as NSError {
             print("Error in fetchAllPins(): \(error)")
             return [Pin]()
@@ -112,8 +112,8 @@ class TravelLocationsViewController: UIViewController, MKMapViewDelegate {
                     Pin.Keys.Longitude : coord.longitude
                 ]
                 
-                let pinToBeAdded = Pin(dictionary: dictionary, context: CoreDataStackManager.sharedInstance().managedObjectContext)
-                CoreDataStackManager.sharedInstance().saveContext()
+                let pinToBeAdded = Pin(dictionary: dictionary, context: CoreDataStackManager.sharedInstance.managedObjectContext)
+                CoreDataStackManager.sharedInstance.saveContext()
                 addPinToMap(pinToBeAdded)
             }
         }

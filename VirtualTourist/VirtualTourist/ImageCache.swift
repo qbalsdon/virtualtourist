@@ -43,14 +43,14 @@ class ImageCache {
         let data = UIImagePNGRepresentation(image!)!
         data.writeToFile(path, atomically: true)
         
-        return path
+        return (NSURL(string: identifier)?.lastPathComponent)!
     }
 
     func removeImage(withIdentifier identifier: String) -> Bool {
         let path = pathForIdentifier(identifier)
         
         do {
-                try NSFileManager.defaultManager().removeItemAtPath(path)
+            try NSFileManager.defaultManager().removeItemAtPath(path)
         } catch _ {
             return false
         }
@@ -59,9 +59,13 @@ class ImageCache {
     }
     
     func removeImage(withPath path: String) -> Bool {
+        let documentsDirectoryURL: NSURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+        let fullURL = documentsDirectoryURL.URLByAppendingPathComponent(path)
         do {
-            try NSFileManager.defaultManager().removeItemAtPath(path)
+            try NSFileManager.defaultManager().removeItemAtPath(fullURL.path!)
+            print("Deleted \(fullURL.path!)")
         } catch _ {
+            print("Delete failed \(fullURL.path!)")
             return false
         }
         
@@ -72,11 +76,9 @@ class ImageCache {
     // MARK: - Helper
     
     func pathForIdentifier(identifier: String) -> String {
-        let removedScheme = identifier.stringByReplacingOccurrencesOfString("https://", withString: "")
-        let id = removedScheme.stringByReplacingOccurrencesOfString("/", withString: "_")
+        let id = NSURL(string: identifier)?.lastPathComponent
         let documentsDirectoryURL: NSURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-        let fullURL = documentsDirectoryURL.URLByAppendingPathComponent(id)
-        
+        let fullURL = documentsDirectoryURL.URLByAppendingPathComponent(id!)
         return fullURL.path!
     }
 }

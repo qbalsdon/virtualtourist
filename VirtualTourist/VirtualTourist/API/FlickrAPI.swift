@@ -13,20 +13,12 @@ class FlickrAPI: NSObject {
     
     // MARK: - Shared Instance
     
-    class func sharedInstance() -> FlickrAPI {
-        
-        struct Singleton {
-            static var sharedInstance = FlickrAPI()
-        }
-        
-        return Singleton.sharedInstance
-    }
+    static let sharedInstance = FlickrAPI()
     
     // MARK: - Shared Image Cache
     
-    struct Caches {
-        static let imageCache = ImageCache()
-    }
+    static let imageCache = ImageCache()
+    
     
     class func findImagesForLocation(location: CLLocationCoordinate2D, radius: Int, page: Int, onSuccess:([FlickrImage]) -> (), onError:(String!)->()){
         

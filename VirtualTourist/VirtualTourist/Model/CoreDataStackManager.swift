@@ -15,13 +15,7 @@ class CoreDataStackManager {
     
     
     // MARK: - Shared Instance
-    class func sharedInstance() -> CoreDataStackManager {
-        struct Static {
-            static let instance = CoreDataStackManager()
-        }
-        
-        return Static.instance
-    }
+    static let sharedInstance = CoreDataStackManager()
     
     // MARK: - The Core Data stack. The code has been moved, unaltered, from the AppDelegate.
     lazy var applicationDocumentsDirectory: NSURL = {

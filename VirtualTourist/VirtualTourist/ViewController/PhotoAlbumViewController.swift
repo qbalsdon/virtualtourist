@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
@@ -60,10 +61,10 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
                 Photo.Keys.ImageURL: image.url
             ]
             
-            let image = Photo(dictionary: imageDict, context: CoreDataStackManager.sharedInstance().managedObjectContext)
+            let image = Photo(dictionary: imageDict, context: CoreDataStackManager.sharedInstance.managedObjectContext)
             image.pin = currentPin
         }
-        CoreDataStackManager.sharedInstance().saveContext()
+        CoreDataStackManager.sharedInstance.saveContext()
         collectionView.reloadData()
     }
     
@@ -74,10 +75,10 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
     @IBAction func newCollectionButtonPressed(sender: AnyObject) {
         newCollectionButton.enabled = false
         for img in (currentPin?.images)! {
-            FlickrAPI.Caches.imageCache.removeImage(withPath: img.filePath)
+            FlickrAPI.imageCache.removeImage(withPath: img.filePath)
             img.pin = nil
         }
-        CoreDataStackManager.sharedInstance().saveContext()
+        CoreDataStackManager.sharedInstance.saveContext()
         pageCounter++
         FlickrAPI.findImagesForLocation(CLLocationCoordinate2D(latitude: (currentPin?.latitude)!, longitude: (currentPin?.longitude)!), radius: 20, page:pageCounter, onSuccess: onFlickrImagesReceived, onError: onFlickrError)
     }
@@ -87,7 +88,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cellId", forIndexPath: indexPath) as! FlickrImageCollectionViewCell
         let photo = currentPin?.images[indexPath.row]
         
-        if let image = FlickrAPI.Caches.imageCache.imageWithIdentifier((photo?.imageURL)!) {
+        if let image = FlickrAPI.imageCache.imageWithIdentifier((photo?.imageURL)!) {
             cell.image.image = image
             imagesToDownload--
         } else {
@@ -99,8 +100,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
                         let image = UIImage(data: data!)
                         cell.image.image = image
                         
-                        photo!.filePath = FlickrAPI.Caches.imageCache.storeImage(image!, withIdentifier: (photo?.imageURL)!)
-                        CoreDataStackManager.sharedInstance().saveContext()
+                        photo!.filePath = FlickrAPI.imageCache.storeImage(image!, withIdentifier: (photo?.imageURL)!)
+                        CoreDataStackManager.sharedInstance.saveContext()
                     }
                 })
             }
@@ -114,16 +115,33 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegateFlowLa
         return cell
     }
     
+    func fetchAllPhotos() -> [Photo] {
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        
+        do {
+            return try CoreDataStackManager.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest) as! [Photo]
+        } catch  let error as NSError {
+            print("Error in fetchAllPins(): \(error)")
+            return [Photo]()
+        }
+    }
+
+    
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        //currentLocation.images.removeAtIndex(indexPath.row)
+        
+        //print("DELETE: (PRE) There are \(fetchAllPhotos().count) photos")
+        
         let img = currentPin?.images[indexPath.row]
         
-        FlickrAPI.Caches.imageCache.removeImage(withPath: (img?.filePath)!)
+        FlickrAPI.imageCache.removeImage(withPath: (img?.filePath)!)
         
         img!.pin = nil
         
-        CoreDataStackManager.sharedInstance().saveContext()
+        CoreDataStackManager.sharedInstance.managedObjectContext.deleteObject(img!)
+        
+        CoreDataStackManager.sharedInstance.saveContext()
         collectionView.reloadData()
+        //print("DELETE: (POST) There are \(fetchAllPhotos().count) photos")
     }
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
